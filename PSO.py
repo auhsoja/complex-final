@@ -16,6 +16,6 @@ class PSO():
             self.vel = np.random.rand(n)
 
 swarm = []
-for i in range(8):
+for i in range(10):
     swarm.append(PSO(2))
     print(swarm[i].pos)
