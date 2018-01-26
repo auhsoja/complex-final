@@ -22,12 +22,13 @@ class PSO():
             self.vel = np.zeros(d)#zero initial velocity has been shown to be the most effective method of velocity initialization
         self.best_pos = self.pos
         self.best = f(self.pos)
-    def step(gb, w, c1, c2):
+        self.func = f  # the function we want to optimize
+    def step(self, gb, w, c1, c2):
         self.vel = w*self.vel + c1*np.random.random()*self.best_pos + c2*np.random.random()*gb
         self.pos += self.vel
-        if f(self.pos) > self.best:
+        if self.func(self.pos) > self.best:
             self.best_pos = self.pos
-            self.best = f(self.pos)
+            self.best = self.func(self.pos)
 
 def init(n):
     swarm = []
@@ -46,11 +47,11 @@ for i in range(len(swarm)):
         globalbest = swarm[i].best
         globalbest_pos = swarm[i].best_pos
 tick = 0
-while(globalbest <= 0.999):
+while(globalbest <= .999):
     for i in range(len(swarm)):
         swarm[i].step(globalbest_pos, w, c1, c2)
         if swarm[i].best > globalbest:
             globalbest = swarm[i].best
             globalbest_pos = swarm[i].best_pos
     tick += 1
-    print(globalbest, globalbest_pos, tick)
+print(globalbest, globalbest_pos, tick)
