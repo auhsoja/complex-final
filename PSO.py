@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 
-xRange = [0., 2.]
-yRange = [0., 2.]
+xRange = [-2., 2.]
+yRange = [-2., 2.]
 
 def z(xy): #function to optimize
     x = xy[0]
@@ -13,6 +13,7 @@ def z(xy): #function to optimize
 class PSO():
     def __init__(self, d, f, domain, pos = None, vel = None): #n = dimensions
         self.pos = pos
+        self.domain = domain #assumes periodic boundary
         if self.pos == None:
             self.pos = np.zeros(d)
             for i in range(d):
@@ -26,9 +27,18 @@ class PSO():
     def step(self, gb, w, c1, c2):
         self.vel = w*self.vel + c1*np.random.random()*self.best_pos + c2*np.random.random()*gb
         self.pos += self.vel
+        self.periodicBoundary()
         if self.func(self.pos) > self.best:
             self.best_pos = self.pos
             self.best = self.func(self.pos)
+    def periodicBoundary(self):
+        for i in range(len(self.pos)):
+            L = self.domain[i][0]
+            U = self.domain[i][1]
+            if self.pos[i] < L:
+                self.pos[i] += U - L
+            elif self.pos[i] > U:
+                self.pos[i] += L - U
 
 def init(n):
     swarm = []
@@ -47,7 +57,7 @@ for i in range(len(swarm)):
         globalbest = swarm[i].best
         globalbest_pos = swarm[i].best_pos
 tick = 0
-while(globalbest <= .999):
+while(globalbest <= 0.9999):
     for i in range(len(swarm)):
         swarm[i].step(globalbest_pos, w, c1, c2)
         if swarm[i].best > globalbest:
