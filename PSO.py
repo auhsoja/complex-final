@@ -21,7 +21,7 @@ class PSO():
         self.vel = vel
         if self.vel == None:
             self.vel = np.zeros(d)#zero initial velocity has been shown to be the most effective method of velocity initialization
-        self.best_pos = self.pos
+        self.best_pos = np.copy(self.pos)
         self.best = f(self.pos)
         self.func = f  # the function we want to optimize
     def step(self, gb, w, c1, c2):
@@ -29,7 +29,7 @@ class PSO():
         self.pos += self.vel
         self.periodicBoundary()
         if self.func(self.pos) > self.best:
-            self.best_pos = self.pos
+            self.best_pos = np.copy(self.pos)
             self.best = self.func(self.pos)
     def periodicBoundary(self):
         for i in range(len(self.pos)):
@@ -57,11 +57,12 @@ for i in range(len(swarm)):
         globalbest = swarm[i].best
         globalbest_pos = swarm[i].best_pos
 tick = 0
-while(globalbest <= 0.9999):
+while(tick < 1000):
     for i in range(len(swarm)):
         swarm[i].step(globalbest_pos, w, c1, c2)
         if swarm[i].best > globalbest:
             globalbest = swarm[i].best
             globalbest_pos = swarm[i].best_pos
+            print(globalbest, globalbest_pos, tick)
     tick += 1
-print(globalbest, globalbest_pos, tick)
+print(globalbest, globalbest_pos)
