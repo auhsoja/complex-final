@@ -6,7 +6,7 @@ import os
 import errno
 from snake.base import Direc, Pos, PointType, Map, Snake
 from snake.gui import GameWindow
-from snake.solver import GreedySolver, HamiltonSolver
+from snake.solver import GreedySolver, HamiltonSolver #, NeuralSolver
 
 
 class GameConf:
@@ -15,7 +15,7 @@ class GameConf:
         """Initialize a default configuration."""
 
         # Size
-        self.map_rows = 10
+        self.map_rows = 5
         self.map_cols = self.map_rows
         self.map_width = 190  # pixels
         self.map_height = self.map_width
@@ -28,9 +28,13 @@ class GameConf:
         self.enable_AI = True
         self.solver_name = 'HamiltonSolver'
 
-        # Switch
-        self.show_gui = True
-        self.show_grid_line = False
+        # GUI Switch
+
+        self.show_gui = False
+        
+	# GUI Options
+
+        self.show_grid_line = True
         self.show_info_panel = True
 
         # Delay
@@ -96,8 +100,8 @@ class Game:
             self.__run_batch_episodes()
 
     def __run_batch_episodes(self):
-        STEPS_LIMIT = 10000
-        episodes = int(input("Please input the number of episodes: "))
+        STEPS_LIMIT = 500
+        episodes = int(input("input the number of episodes bro: "))
         print("\nMap size: %dx%d" % (self.__conf.map_rows, self.__conf.map_cols))
         print("Solver: %s\n" % self.__conf.solver_name[:-6].lower())
         tot_suc, tot_suc_steps = 0, 0
