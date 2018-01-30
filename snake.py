@@ -26,3 +26,6 @@ class Snake():
 
     def eat_fruit(self):
         # TODO 
+    
+    def get_neighborhood(self, board):
+        # TODO
