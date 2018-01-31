@@ -25,28 +25,28 @@ class robot():
     def left(self, grid):
         if grid[self.pos[0]-1][self.pos[1]] == 2:
             print("Failed to move left")
-            self.score -= 10
+            self.score -= 5
         else:
             self.pos[0] -= 1
 
     def right(self, grid):
         if grid[self.pos[0]+1][self.pos[1]] == 2:
             print("Failed to move right")
-            self.score -= 10
+            self.score -= 5
         else:
             self.pos[0] += 1
     
     def up(self, grid):
         if grid[self.pos[0]][self.pos[1]-1] == 2:
             print("Failed to move up")
-            self.score -= 10
+            self.score -= 5
         else:
             self.pos[1] -= 1
 
     def down(self, grid):
         if grid[self.pos[0]][self.pos[1]+1] == 2:
             print("Failed to move down")
-            self.score -= 10
+            self.score -= 5
         else:
             self.pos[1] += 1
             
@@ -60,10 +60,11 @@ class robot():
     def pickupCan(self, grid):
         if grid[self.pos[0]][self.pos[1]] == 1:
             grid[self.pos[0]][self.pos[1]] = 0
+            print("Successfully picked up can")
             self.score += 10
         else:
             print("Failed to pick up can")
-            self.score -= 10
+            self.score -= 1
 
 grid = initGrid(5, 1)
 print(grid())
