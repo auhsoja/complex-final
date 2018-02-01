@@ -65,6 +65,16 @@ class robot():
         else:
             print("Failed to pick up can")
             self.score -= 1
+            
+    def inputs(self, grid):
+        middle = grid[self.pos[0]][self.pos[1]]
+        left = grid[self.pos[0]-1][self.pos[1]]
+        right = grid[self.pos[0]+1][self.pos[1]]
+        down = grid[self.pos[0]][self.pos[1]-1]
+        up = grid[self.pos[0]][self.pos[1]+1]
+        return [middle, left, right, down, up]
 
 grid = initGrid(5, 1)
-print(grid())
+print(grid)
+robby = robot(grid)
+print(robby.inputs(grid))
