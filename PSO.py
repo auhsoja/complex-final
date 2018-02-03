@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import time
 
 xRange = [0., 2.]
@@ -64,7 +65,7 @@ for i in range(len(swarm)):
         globalbest_pos = swarm[i].best_pos
 start = time.time()
 tick = 0
-while(globalbest < 0.999):
+while(globalbest < 0.99):
     for i in range(len(swarm)):
         swarm[i].step(globalbest_pos, w, c1, c2)
         if swarm[i].best > globalbest:
