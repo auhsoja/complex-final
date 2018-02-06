@@ -7,7 +7,7 @@ def softmax(x):
 
 
 class RNN:
-    def __init__(self, input_space = 5, move_space=6, hidden_dim=4, bptt_truncate=4):
+    def __init__(self, input_space = 5, move_space=6, hidden_dim=3, bptt_truncate=4):
         # Assign instance variables
         self.move_space = move_space
         self.input_space = input_space
