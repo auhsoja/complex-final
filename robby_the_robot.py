@@ -161,7 +161,7 @@ class robot():
             averages.append(average)
             tick += 1
         ts = np.linspace(0, tick-1, tick)
-"""
+        """
         plt.figure()
         plt.axis([0, tick-1, 0, 400])
         plt.plot(ts, bests)
@@ -170,7 +170,7 @@ class robot():
         plt.axis([0, tick-1, -300, 400])
         plt.plot(ts, averages)
         plt.title("Average score over time")
-"""
+        """
         string = str(global_best) + "_" + str(len(swarm))
         
         with open("robby_game_" + string + '.csv', 'w') as f:
