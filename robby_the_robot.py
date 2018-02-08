@@ -3,7 +3,7 @@ import sys
 from RNN_basic import softmax, RNN
 import numpy as np
 from PSO import PSO
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import csv
 
 # TODO --> Get rid of print statements. IO is slow
@@ -140,9 +140,9 @@ class robot():
                 global_best_strat = swarm[i].strat
                 global_best_grid = [[elem for elem in self.grid[k]] for k in range(len(self.grid))]
         tick = 0
-        while (tick <= 200):
+        while (tick <= 100):
             self.grid = initGrid(10, 40)
-            #print("FINISHED ITERATION:", tick, global_best)
+            print("FINISHED ITERATION:", tick, global_best)
             #if tick % 100 == 0:
                 #print("Finished Epoch. Pos:", global_best_pos)
                 #print("Strat: ", global_best_strat)
@@ -201,13 +201,7 @@ class robot():
 #grid = initGrid(10, 40)
 #print(grid)
 
-for i in range(18):
-    for _ in range(10):
-        robby = robot()
-        robby.optimize(100+50*i)
-        print("Finished a trial, guys! Swarm size:", 100+50*i)
-
-for _ in range(2):
+for _ in range(3):
     robby = robot()
-    robby.optimize(5000)
+    robby.optimize(750)
     print("Finished a trial, guys! Swarm size: 5000")
