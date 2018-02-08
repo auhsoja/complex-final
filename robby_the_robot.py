@@ -191,10 +191,13 @@ class robot():
             
             f.write('\n\n')
             f.write('Path: \n')
+
+            self.strat.s = np.zeros((2, hidden_dim))
             
             for _ in range(100):
                 input = np.array([self.inputs(self.grid)])
                 out = self.strat.predict(input)[0]
+
                 self.moves[out](self.grid)
                 f.write(str(self.pos)+'\n')
                 
