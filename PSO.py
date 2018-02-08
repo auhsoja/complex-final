@@ -3,27 +3,6 @@ import sys
 import time
 import random
 
-xRange = [0., 2.]
-yRange = [0., 2.]
-aRange = [0., 2.]
-bRange = [0., 2.]
-
-def initGrid(d, n):
-    grid = []
-    grid.append([2]*d) #top wall
-    for i in range(d-2):
-        grid.append([0]*d)
-        grid[i+1][0] = 2 #left wall
-        grid[i+1][d-1] = 2 #right wall
-    grid.append([2]*d) #bot wall
-    while (n > 0): #add n cans
-        a = random.randint(0, len(grid)-1)
-        b = random.randint(0, len(grid)-1)
-        if grid[a][b] == 0:
-            grid[a][b] = 1
-            n -= 1
-    return grid
-
 class PSO():
     def __init__(self, d, f, domain, pos = None, vel = None, robby=None): #n = dimensions
         self.pos = pos
@@ -49,7 +28,6 @@ class PSO():
         U = []
         W = []
         V = []
-        grid = initGrid(10, 40)
         for i in range(3):
             U.append(self.pos[5*i:5*(i+1)])
         for i in range(3):
@@ -59,7 +37,7 @@ class PSO():
         U = np.array(U)
         W = np.array(W)
         V = np.array(V)
-        score = robby.play_with_RNN(U, V, W, grid)
+        score = robby.play_with_RNN(U, V, W)
         return score
 
     def step(self, gb, w, c1, c2, robby=None):
