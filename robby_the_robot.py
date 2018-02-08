@@ -2,33 +2,17 @@ import random
 import sys
 from RNN_basic import softmax, RNN
 import numpy as np
-from PSO import PSO
+from PSO import PSO, initGrid
+import matplotlib.pyplot as plt
 
 # TODO --> Get rid of print statements. IO is slow
 
-def initGrid(d, n):
-    grid = []
-    grid.append([2]*d) #top wall
-    for i in range(d-2):
-        grid.append([0]*d)
-        grid[i+1][0] = 2 #left wall
-        grid[i+1][d-1] = 2 #right wall
-    grid.append([2]*d) #bot wall
-    while (n > 0): #add n cans
-        a = random.randint(0, len(grid)-1)
-        b = random.randint(0, len(grid)-1)
-        if grid[a][b] == 0:
-            grid[a][b] = 1
-            n -= 1
-    return grid
-
 class robot():
-    def __init__(self, grid, pos = None):
+    def __init__(self, pos = None):
         if pos == None:
-            self.pos = [random.randint(1, len(grid)-2), random.randint(1, len(grid)-2)]
+            self.pos = [1, 1]
         self.score = 0
         self.moves = [self.left, self.right, self.up, self.down, self.random, self.pickupCan]
-        self.grid = grid
 
 
     def reset(self):
@@ -94,8 +78,8 @@ class robot():
         return [middle, left, right, down, up]
 
 
-    def play_with_RNN(self, U=None, V=None, W=None):
-        grid = [[elem for elem in self.grid[k]] for k in range(len(self.grid))]
+    def play_with_RNN(self, U=None, V=None, W=None, grid=initGrid(10, 40)):
+#        grid = [[elem for elem in self.grid[k]] for k in range(len(self.grid))]
         strat = RNN()
         if np.any(U) and np.any(V) and np.any(W):
             strat.U = U
@@ -107,6 +91,7 @@ class robot():
             self.moves[out](grid)
         ret = self.score
         self.score = 0
+        self.pos = [1, 1]
         return [ret, strat]
 
     def init_swarm(self, n, parameters=42):
@@ -126,6 +111,8 @@ class robot():
         w = .98
         c1 = .02
         c2 = .04
+        bests = []
+        averages = []
         global_best = -sys.float_info.max
         global_best_pos = None
         for i in range(len(swarm)):
@@ -133,24 +120,43 @@ class robot():
             if swarm[i].best > global_best:
                 global_best = swarm[i].best
                 global_best_pos = swarm[i].best_pos
+                global_best_strat = swarm[i].strat
         tick = 0
-        while (tick < 2000):
-            if tick % 10 == 0:
-                print("FINISHED ITERATION:", tick)
-            if tick % 200 == 0:
-                print("Finished Epoch. Fitness:", global_best)
+        while (tick <= 500):
+            print("FINISHED ITERATION:", tick, global_best)
+            if tick % 100 == 0:
+                print("Finished Epoch. Pos:", global_best_pos)
+                print("Strat: ", global_best_strat)
             for i in range(len(swarm)):
                 swarm[i].step(global_best_pos, w, c1, c2, robby=self)
                 if swarm[i].best > global_best:
                     global_best = swarm[i].best
                     global_best_pos = swarm[i].best_pos
+                    global_best_strat = swarm[i].strat
+            bests.append(global_best)
+            average = 0
+            for i in range(len(swarm)):
+                average += swarm[i].best
+            average /= len(swarm)
+            averages.append(average)
             tick += 1
+        self.strat = global_best_strat
+        self.showRobby()
+        plt.figure()
+        ts = np.linspace(0, 500, 501)
+        plt.plot(ts, bests)
+        plt.title("Global best score over time")
+        plt.figure()
+        plt.plot(ts, averages)
+        plt.title("Average score over time")
         return [global_best, global_best_pos] 
+    
+    def showRobby(self):
+        pass
 
-grid = initGrid(10, 40)
+#grid = initGrid(10, 40)
 #print(grid)
-
-robby = robot(grid)
+robby = robot()
 robby.optimize()
 
 print(robby.inputs(grid))

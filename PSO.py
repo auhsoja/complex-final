@@ -1,19 +1,28 @@
 import numpy as np
 import sys
 import time
+import random
 
 xRange = [0., 2.]
 yRange = [0., 2.]
 aRange = [0., 2.]
 bRange = [0., 2.]
 
-def z(xy): #function to optimize
-    x = xy[0]
-    y = xy[1]
-    a = xy[2]
-    b = xy[3]
-    return np.sin(x)*np.sin(y)*np.sin(a)*np.sin(b)
-    #return 7*x*y/(np.e**(x**2+y**2))
+def initGrid(d, n):
+    grid = []
+    grid.append([2]*d) #top wall
+    for i in range(d-2):
+        grid.append([0]*d)
+        grid[i+1][0] = 2 #left wall
+        grid[i+1][d-1] = 2 #right wall
+    grid.append([2]*d) #bot wall
+    while (n > 0): #add n cans
+        a = random.randint(0, len(grid)-1)
+        b = random.randint(0, len(grid)-1)
+        if grid[a][b] == 0:
+            grid[a][b] = 1
+            n -= 1
+    return grid
 
 class PSO():
     def __init__(self, d, f, domain, pos = None, vel = None, robby=None): #n = dimensions
@@ -31,12 +40,16 @@ class PSO():
             self.best = f(self.pos)
             self.func = f  # the function we want to optimize
         else:
-            self.best = self.score_pos(robby)
+            score = self.score_pos(robby)
+            self.best = score[0]
+            self.strat = score[1]
+            
 
     def score_pos(self, robby):
         U = []
         W = []
         V = []
+        grid = initGrid(10, 40)
         for i in range(3):
             U.append(self.pos[5*i:5*(i+1)])
         for i in range(3):
@@ -46,7 +59,7 @@ class PSO():
         U = np.array(U)
         W = np.array(W)
         V = np.array(V)
-        score = robby.play_with_RNN(U, V, W)[0]
+        score = robby.play_with_RNN(U, V, W, grid)
         return score
 
     def step(self, gb, w, c1, c2, robby=None):
@@ -60,9 +73,10 @@ class PSO():
             # Put components of the position into synapses
             score = self.score_pos(robby)
             #print(score)
-            if score > self.best:
+            if score[0] > self.best:
                 self.best_pos = np.copy(self.pos)
-                self.best = score
+                self.best = score[0]
+                self.strat = score[1]
 
 
     def periodicBoundary(self):
@@ -104,3 +118,11 @@ if __name__ == 'main':
         tick += 1
     print(globalbest, globalbest_pos, tick)
     print(time.time() - start)
+
+"""Finished Epoch (score 214). Pos: [ 7.1672279   0.02993712 -2.66411889 -3.56642071  4.20449331 -0.16198682
+  4.64522144 -1.2965104  -2.4643721   4.64137075  7.30523026  0.16399984
+  0.02209856  0.36007386 -4.39863391 -4.60659643  1.88839538 -0.27271591
+  0.23926015  4.17146198 -3.48052079 -3.07959852  2.42464044 -1.68055465
+  0.28460891  2.47596972 -0.91486373 -3.88909078  2.78262337  7.43812095
+ -2.05347992  5.662662    3.87528959  2.63361966  6.25318129  0.91008109
+ -4.73042185 -1.93609789  3.48232229  8.5789724   3.94766857  4.45197993]"""
